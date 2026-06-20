@@ -24,6 +24,10 @@ function EventList() {
   }, []);
 
   const handleDelete = async (id) => {
+    if (!id) {
+      console.error('No id provided for delete', id);
+      return;
+    }
     try {
       await axios.delete(`http://localhost:5000/event/events/${id}`, {
         headers: {
@@ -37,6 +41,10 @@ function EventList() {
   };
 
   const handleView = (id) => {
+    if (!id) {
+      console.error('No id provided for view', id);
+      return;
+    }
     navigate(`/events/${id}`);
   };
 
@@ -74,32 +82,35 @@ function EventList() {
           </tr>
         </thead>
         <tbody>
-          {events.map((event) => (
-            <tr key={event._id}>
-              <td>{event.title}</td>
-              <td>{event.description}</td>
-              <td>{formatDate(event.date)}</td>
-              <td>{event.organizer}</td>
-              <td>{event.phone}</td>
-              <td>{event.venue}</td>
-              <td style={{ display: 'flex', gap: '8px' }}>
-                <button
-                  className="btn-info"
-                  onClick={() => handleView(event._id)}
-                  title="View"
-                >
-                  👁️
-                </button>
-                <button
-                  className="btn-danger"
-                  onClick={() => handleDelete(event._id)}
-                  title="Delete"
-                >
-                  🗑️
-                </button>
-              </td>
-            </tr>
-          ))}
+          {events.map((event) => {
+            const id = event._id || event.id;
+            return (
+              <tr key={id || Math.random()}>
+                <td>{event.title}</td>
+                <td>{event.description}</td>
+                <td>{formatDate(event.date)}</td>
+                <td>{event.organizer}</td>
+                <td>{event.phone}</td>
+                <td>{event.venue}</td>
+                <td style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    className="btn-info"
+                    onClick={() => handleView(id)}
+                    title="View"
+                  >
+                    👁️
+                  </button>
+                  <button
+                    className="btn-danger"
+                    onClick={() => handleDelete(id)}
+                    title="Delete"
+                  >
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
